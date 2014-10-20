@@ -1,0 +1,76 @@
+#ifndef _GESTURE_H
+#define _GESTURE_H
+
+#include "stm32f0xx_hal.h"
+#include "led.h"
+#include "uart.h"
+
+//config
+#define T  (500)
+#define CONFIG_SPRING_GESTURE_SEQ_SIZE (50)
+#define CONFIG_SPRING_GESTURE_TIMEOUT  (10*1000)
+//end config
+
+#define SPRING_GESTURE_MASK            (0xF)
+#define SPRING_GESTURE_SHIFT           (4)
+#define SPRING_GESTURE_NONE            (0)
+#define SPRING_GESTURE_LEFT            (1)
+#define SPRING_GESTURE_RIGHT           (2)
+#define SPRING_GESTURE_UP              (3)
+#define SPRING_GESTURE_DOWN            (4)
+#define SPRING_GESTURE_LEFT_LEFT       (SPRING_GESTURE_LEFT<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_LEFT)
+#define SPRING_GESTURE_LEFT_RIGHT      (SPRING_GESTURE_LEFT<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_RIGHT)
+#define SPRING_GESTURE_LEFT_UP         (SPRING_GESTURE_LEFT<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_UP)
+#define SPRING_GESTURE_LEFT_DOWN       (SPRING_GESTURE_LEFT<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_DOWN)
+#define SPRING_GESTURE_RIGHT_LEFT      (SPRING_GESTURE_RIGHT<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_LEFT)
+#define SPRING_GESTURE_RIGHT_RIGHT     (SPRING_GESTURE_RIGHT<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_RIGHT)
+#define SPRING_GESTURE_RIGHT_UP        (SPRING_GESTURE_RIGHT<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_UP)
+#define SPRING_GESTURE_RIGHT_DOWN      (SPRING_GESTURE_RIGHT<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_DOWN)
+#define SPRING_GESTURE_UP_LEFT         (SPRING_GESTURE_UP<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_LEFT)
+#define SPRING_GESTURE_UP_RIGHT        (SPRING_GESTURE_UP<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_RIGHT)
+#define SPRING_GESTURE_UP_UP           (SPRING_GESTURE_UP<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_UP)
+#define SPRING_GESTURE_UP_DOWN         (SPRING_GESTURE_UP<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_DOWN)
+#define SPRING_GESTURE_DOWN_LEFT       (SPRING_GESTURE_DOWN<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_LEFT)
+#define SPRING_GESTURE_DOWN_RIGHT      (SPRING_GESTURE_DOWN<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_RIGHT)
+#define SPRING_GESTURE_DOWN_UP         (SPRING_GESTURE_DOWN<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_UP)
+#define SPRING_GESTURE_DOWN_DOWN       (SPRING_GESTURE_DOWN<<SPRING_GESTURE_SHIFT|SPRING_GESTURE_DOWN)
+
+typedef enum {
+  false = 0,
+  true  = 1,
+  FALSE = 0,
+  TRUE  = 1,
+} bool;
+
+typedef struct {
+  uint32_t time;
+  char     state;
+  char     reserve[3];
+} gesture_tuple;
+
+typedef struct {
+  int  head;
+  int  tail;
+  int  size;
+  gesture_tuple data[CONFIG_SPRING_GESTURE_SEQ_SIZE];
+} gesture_circular_buff;
+
+typedef struct {
+  int    count;
+  char **seqlist;
+} scheme_list;
+  
+#define COPY(a,b) do { memcpy(&a, &b, sizeof(gesture_tuple)); } while(0)
+#define INFINITE  (0xFFFFFFFF)
+
+#define enableInterrupts()  
+#define disableInterrupts() 
+
+
+bool write_tuple(gesture_tuple*);
+void Error_Handler(void);
+int wait_user_input(int timeout);
+int trigger(void);
+
+
+#endif
