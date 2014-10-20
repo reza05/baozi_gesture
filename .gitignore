@@ -1,0 +1,10 @@
+*.o
+*.d
+*.crf
+*.def
+*.hex
+*.bin
+*.i
+*.lst
+*.txt
+*.map
